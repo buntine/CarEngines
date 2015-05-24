@@ -1,7 +1,10 @@
 var audioCtx = new (window.AudioContext || window.webkitAudioContext)(),
     osc = audioCtx.createOscillator(),
     gain = audioCtx.createGain(),
-    distortion = audioCtx.createWaveShaper();
+    distortion = audioCtx.createWaveShaper(),
+    freqDiff = 0,
+    minFreq = 69,
+    maxFreq = 121;
 
 function makeDistortionCurve(amount) {
   var k = typeof amount === 'number' ? amount : 50,
@@ -29,6 +32,18 @@ osc.frequency.value = 70;
 gain.gain.value = 0.2;
 osc.start();
 
+window.onkeydown = function(e) {
+  freqDiff = 1;
+};
+
+window.onkeyup = function(e) {
+  freqDiff = -1;
+};
+
 setInterval(function(){
-  osc.frequency.value += 1;
+  var currFreq = osc.frequency.value;
+
+  if ((freqDiff < 0 && currFreq > minFreq) || (freqDiff > 0 && currFreq < maxFreq)) {
+    osc.frequency.value += freqDiff;
+  }
 }, 100);
