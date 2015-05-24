@@ -25,6 +25,10 @@ osc.connect(gain);
 gain.connect(audioCtx.destination);
 
 osc.type = "sawtooth";
-osc.frequency.value = 50;
-gain.gain.value = 0.3;
+osc.frequency.value = 70;
+gain.gain.value = 0.2;
 osc.start();
+
+setInterval(function(){
+  osc.frequency.value += 1;
+}, 100);
