@@ -14,11 +14,11 @@ gain.gain.value = 0.2;
 osc.start();
 
 window.onkeydown = function(e) {
-  freqDiff = 2;
+  freqDiff = 1;
 };
 
 window.onkeyup = function(e) {
-  freqDiff = -2;
+  freqDiff = -1;
 };
 
 setInterval(function(){
@@ -27,4 +27,4 @@ setInterval(function(){
   if ((freqDiff < 0 && currFreq > minFreq) || (freqDiff > 0 && currFreq < maxFreq)) {
     osc.frequency.value += freqDiff;
   }
-}, 100);
+}, 40);
