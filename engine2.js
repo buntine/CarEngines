@@ -1,6 +1,10 @@
 var audioCtx = new (window.AudioContext || window.webkitAudioContext)(),
     source = audioCtx.createBufferSource(),
-    xhr = new XMLHttpRequest();
+    xhr = new XMLHttpRequest(),
+    pbDiff = 0,
+    minPb = 1.1,
+    maxPb = 2.1;
+
 
 xhr.open("GET", "/sounds/engine.wav", true);
 xhr.responseType = "arraybuffer";
@@ -16,7 +20,17 @@ xhr.onload = function(e){
 xhr.send();
 
 window.onkeyup = function(e) {
+  pbDiff = -0.02;
 };
 
 window.onkeydown = function(e) {
+  pbDiff = 0.02;
 };
+
+setInterval(function(){
+  var currPb = source.playbackRate.value;
+
+  if ((pbDiff < 0 && currPb > minPb) || (pbDiff > 0 && currPb < maxPb)) {
+    source.playbackRate.value += pbDiff;
+  }
+}, 50);
