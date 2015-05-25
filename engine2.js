@@ -3,7 +3,7 @@ var audioCtx = new (window.AudioContext || window.webkitAudioContext)(),
     xhr = new XMLHttpRequest(),
     pbDiff = 0,
     minPb = 1.1,
-    maxPb = 2.1;
+    maxPb = 2.0;
 
 
 xhr.open("GET", "/sounds/engine.wav", true);
@@ -20,11 +20,15 @@ xhr.onload = function(e){
 xhr.send();
 
 window.onkeyup = function(e) {
-  pbDiff = -0.02;
+  if (e.keyCode == 38) {
+    pbDiff = -0.02;
+  }
 };
 
 window.onkeydown = function(e) {
-  pbDiff = 0.02;
+  if (e.keyCode == 38) {
+    pbDiff = 0.02;
+  }
 };
 
 setInterval(function(){

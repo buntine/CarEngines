@@ -14,11 +14,15 @@ gain.gain.value = 0.2;
 osc.start();
 
 window.onkeydown = function(e) {
-  freqDiff = 1;
+  if (e.keyCode == 38) {
+    freqDiff = 1;
+  }
 };
 
 window.onkeyup = function(e) {
-  freqDiff = -1;
+  if (e.keyCode == 38) {
+    freqDiff = -1;
+  }
 };
 
 setInterval(function(){
