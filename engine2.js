@@ -6,7 +6,7 @@ window.onload = function(){
       pitchDiff = 0,
       minPitch = 1.1,
       maxPitch = 2.2,
-      incPitch, decPitch, intervalId;
+      source, intervalId;
 
   function createPitchDiff(n) {
     return function(e) {
@@ -19,36 +19,38 @@ window.onload = function(){
   xhr.open("GET", "/sounds/engine.wav", true);
   xhr.responseType = "arraybuffer";
   xhr.onload = function(e){
-    var source = audioCtx.createBufferSource(),
-        audioData = this.response;
+    var audioData = this.response;
 
-    audioCtx.decodeAudioData(audioData, function(buffer) {
-      source.buffer = buffer;
-      source.loop = true;
-      source.connect(audioCtx.destination);
-      source.start();
+    window.addEventListener("keydown", createPitchDiff(0.02))
+    window.addEventListener("keyup", createPitchDiff(-0.02))
+
+    start.addEventListener("click", function(e){
+      source = audioCtx.createBufferSource();
+
+      audioCtx.decodeAudioData(audioData, function(buffer) {
+        source.buffer = buffer;
+        source.loop = true;
+        source.connect(audioCtx.destination);
+        source.start();
+      });
+
+      intervalId = setInterval(function(){
+        var currPitch = source.playbackRate.value;
+
+        if ((pitchDiff < 0 && currPitch > minPitch) ||
+            (pitchDiff > 0 && currPitch < maxPitch)) {
+          source.playbackRate.value += pitchDiff;
+        }
+      }, 50);
+    });
+
+    stop.addEventListener("click", function(e){
+      if (source) {
+        source.stop();
+      }
+      clearInterval(intervalId);
     });
   };
 
   xhr.send();
-
-  window.onkeyup = function(e) {
-    if (e.keyCode == 38) {
-      pbDiff = -0.02;
-    }
-  };
-
-  window.onkeydown = function(e) {
-    if (e.keyCode == 38) {
-      pbDiff = 0.02;
-    }
-  };
-
-  setInterval(function(){
-    var currPb = source.playbackRate.value;
-
-    if ((pbDiff < 0 && currPb > minPb) || (pbDiff > 0 && currPb < maxPb)) {
-      source.playbackRate.value += pbDiff;
-    }
-  }, 50);
 };

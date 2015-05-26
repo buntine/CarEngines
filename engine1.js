@@ -5,7 +5,7 @@ window.onload = function(){
       freqDiff = 0,
       minFreq = 69,
       maxFreq = 121,
-      osc, intervalId, incFreq, decFreq;
+      osc, intervalId;
 
   function createFreqDiff(n) {
     return function(e) {
@@ -15,8 +15,8 @@ window.onload = function(){
     }
   }
 
-  incFreq = createFreqDiff(1);
-  decFreq = createFreqDiff(-1);
+  window.addEventListener("keydown", createFreqDiff(1));
+  window.addEventListener("keyup", createFreqDiff(-1));
 
   start.addEventListener("click", function(e){
     var gain = audioCtx.createGain();
@@ -25,12 +25,9 @@ window.onload = function(){
     osc.connect(gain);
     gain.connect(audioCtx.destination);
     osc.type = "sawtooth";
-    osc.frequency.value = 70;
+    osc.frequency.value = minFreq + 1;
     gain.gain.value = 0.2;
     osc.start();
-
-    window.addEventListener("keydown", incFreq);
-    window.addEventListener("keyup", decFreq);
 
     intervalId = setInterval(function(){
       var currFreq = osc.frequency.value;
@@ -46,8 +43,6 @@ window.onload = function(){
     if (osc) {
       osc.stop();
     }
-    window.removeEventListener("keydown", incFreq);
-    window.removeEventListener("keyup", decFreq);
     clearInterval(intervalId);
   });
 };
