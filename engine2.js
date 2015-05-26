@@ -3,8 +3,7 @@ var audioCtx = new (window.AudioContext || window.webkitAudioContext)(),
     xhr = new XMLHttpRequest(),
     pbDiff = 0,
     minPb = 1.1,
-    maxPb = 2.0;
-
+    maxPb = 2.2;
 
 xhr.open("GET", "/sounds/engine.wav", true);
 xhr.responseType = "arraybuffer";
