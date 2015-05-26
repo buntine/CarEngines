@@ -19,30 +19,33 @@ window.onload = function(){
   window.addEventListener("keyup", createFreqDiff(-1));
 
   start.addEventListener("click", function(e){
-    var gain = audioCtx.createGain();
-     
-    osc = audioCtx.createOscillator(),
-    osc.connect(gain);
-    gain.connect(audioCtx.destination);
-    osc.type = "sawtooth";
-    osc.frequency.value = minFreq + 1;
-    gain.gain.value = 0.2;
-    osc.start();
+    if (!osc) {
+      var gain = audioCtx.createGain();
+       
+      osc = audioCtx.createOscillator(),
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.type = "sawtooth";
+      osc.frequency.value = minFreq + 1;
+      gain.gain.value = 0.2;
+      osc.start();
 
-    intervalId = setInterval(function(){
-      var currFreq = osc.frequency.value;
+      intervalId = setInterval(function(){
+        var currFreq = osc.frequency.value;
 
-      if ((freqDiff < 0 && currFreq > minFreq) ||
-          (freqDiff > 0 && currFreq < maxFreq)) {
-        osc.frequency.value += freqDiff;
-      }
-    }, 40);
+        if ((freqDiff < 0 && currFreq > minFreq) ||
+            (freqDiff > 0 && currFreq < maxFreq)) {
+          osc.frequency.value += freqDiff;
+        }
+      }, 40);
+    }
   });
 
   stop.addEventListener("click", function(e){
     if (osc) {
       osc.stop();
+      osc = null;
+      clearInterval(intervalId);
     }
-    clearInterval(intervalId);
   });
 };

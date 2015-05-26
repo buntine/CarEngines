@@ -25,30 +25,33 @@ window.onload = function(){
     window.addEventListener("keyup", createPitchDiff(-0.02))
 
     start.addEventListener("click", function(e){
-      source = audioCtx.createBufferSource();
+      if (!source) {
+        source = audioCtx.createBufferSource();
 
-      audioCtx.decodeAudioData(audioData, function(buffer) {
-        source.buffer = buffer;
-        source.loop = true;
-        source.connect(audioCtx.destination);
-        source.start();
-      });
+        audioCtx.decodeAudioData(audioData, function(buffer) {
+          source.buffer = buffer;
+          source.loop = true;
+          source.connect(audioCtx.destination);
+          source.start();
+        });
 
-      intervalId = setInterval(function(){
-        var currPitch = source.playbackRate.value;
+        intervalId = setInterval(function(){
+          var currPitch = source.playbackRate.value;
 
-        if ((pitchDiff < 0 && currPitch > minPitch) ||
-            (pitchDiff > 0 && currPitch < maxPitch)) {
-          source.playbackRate.value += pitchDiff;
-        }
-      }, 50);
+          if ((pitchDiff < 0 && currPitch > minPitch) ||
+              (pitchDiff > 0 && currPitch < maxPitch)) {
+            source.playbackRate.value += pitchDiff;
+          }
+        }, 50);
+      }
     });
 
     stop.addEventListener("click", function(e){
       if (source) {
         source.stop();
+        source = null;
+        clearInterval(intervalId);
       }
-      clearInterval(intervalId);
     });
   };
 
