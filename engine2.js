@@ -3,15 +3,13 @@ window.onload = function(){
       stop = document.getElementById("stop"),
       audioCtx = new (window.AudioContext || window.webkitAudioContext)(),
       xhr = new XMLHttpRequest(),
-      pitchDiff = 0,
-      minPitch = 1.1,
-      maxPitch = 2.2,
+      pitch = {step: 0, min: 1.1, max: 2.2},
       source, intervalId;
 
-  function createPitchDiff(n) {
+  function createPitchStep(n) {
     return function(e) {
       if (e.keyCode == 38) {
-        pitchDiff = n;
+        pitch.step = n;
       }
     }
   }
@@ -21,8 +19,8 @@ window.onload = function(){
   xhr.onload = function(e){
     var audioData = this.response;
 
-    window.addEventListener("keydown", createPitchDiff(0.02))
-    window.addEventListener("keyup", createPitchDiff(-0.02))
+    window.addEventListener("keydown", createPitchStep(0.02))
+    window.addEventListener("keyup", createPitchStep(-0.02))
 
     start.addEventListener("click", function(e){
       if (!source) {
@@ -38,9 +36,9 @@ window.onload = function(){
         intervalId = setInterval(function(){
           var currPitch = source.playbackRate.value;
 
-          if ((pitchDiff < 0 && currPitch > minPitch) ||
-              (pitchDiff > 0 && currPitch < maxPitch)) {
-            source.playbackRate.value += pitchDiff;
+          if ((pitch.step < 0 && currPitch > pitch.min) ||
+              (pitch.step > 0 && currPitch < pitch.max)) {
+            source.playbackRate.value += pitch.step;
           }
         }, 50);
       }

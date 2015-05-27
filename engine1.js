@@ -2,15 +2,13 @@ window.onload = function(){
   var start = document.getElementById("start"),
       stop = document.getElementById("stop"),
       audioCtx = new (window.AudioContext || window.webkitAudioContext)(),
-      freqDiff = 0,
-      minFreq = 69,
-      maxFreq = 121,
+      freq = {step: 0, min: 69, max: 121},
       osc, intervalId;
 
   function createFreqDiff(n) {
     return function(e) {
       if (e.keyCode == 38) {
-        freqDiff = n;
+        freq.step = n;
       }
     }
   }
@@ -26,16 +24,16 @@ window.onload = function(){
       osc.connect(gain);
       gain.connect(audioCtx.destination);
       osc.type = "sawtooth";
-      osc.frequency.value = minFreq + 1;
+      osc.frequency.value = freq.min + 1;
       gain.gain.value = 0.2;
       osc.start();
 
       intervalId = setInterval(function(){
         var currFreq = osc.frequency.value;
 
-        if ((freqDiff < 0 && currFreq > minFreq) ||
-            (freqDiff > 0 && currFreq < maxFreq)) {
-          osc.frequency.value += freqDiff;
+        if ((freq.step < 0 && currFreq > freq.min) ||
+            (freq.step > 0 && currFreq < freq.max)) {
+          osc.frequency.value += freq.step;
         }
       }, 40);
     }
